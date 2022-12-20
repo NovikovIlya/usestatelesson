@@ -3,28 +3,53 @@ import './App.css';
 import React from 'react'
 
 function App() {
-  const [users, setUsers] = React.useState();
+  const [tasks, setTasks] = React.useState([{text: 'Тестовая задача'}]);
 
-  
-  React.useEffect(()=>{
-    fetch('https://jsonplaceholder.typicode.com/users')
-    .then((res)=>res.json())
-    .then((json)=>setUsers(json));
-  },[])
+  function onClickAdd(){
+    const text = prompt('Текст задачи');
+    setTasks([...tasks, {text}]);
+  }
+
+  function onClickEdit(indexEl){
+    const text = prompt('Новый текст задачи');
+    
+    setTasks(tasks.map(function(obj ,i, array){
+      if (indexEl === i){
+        obj.text = text;
+      }
+      return obj;
+    }))
+  }
+
+  function onClickRemove(indexEl){
+    setTasks(tasks.filter(function(all ,i, array){
+     return i !== indexEl
+    }))
+  }
+
+  function cns(){
+    console.log(tasks)
+  }
+ 
 
 
-  console.log(users);
+
   
 
   return (
     <>
-
     {<ul>
-      {users?.map((obj) => (
-          <li key={obj.id}>{obj.name}🟢</li>
+      {tasks.map((task, indexEl) => (
+          <li key={indexEl}>
+            {task.text}
+            <button onClick={()=> onClickEdit(indexEl)}>Edit</button>
+            <button onClick={()=> onClickRemove(indexEl)}>Delete</button>
+            </li> 
           ))
       }
       </ul>}
+      <button onClick={onClickAdd}>Добавить</button>
+      <button onClick={cns}>Тык</button>
     </>
   )
 }
